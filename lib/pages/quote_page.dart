@@ -1,4 +1,9 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
+import 'package:daily_quotes/constants/quotes.dart';
+import 'package:daily_quotes/helper/prefs_helper.dart';
+import 'package:flutter/services.dart';
 
 class QuotePage extends StatefulWidget {
   const QuotePage({super.key});
@@ -8,8 +13,209 @@ class QuotePage extends StatefulWidget {
 }
 
 class _QuotePageState extends State<QuotePage> {
+  String currentQuote = '';
+  String currentAuthor = '';
+  late int lastQuoteIndex;
+
+  @override
+  void initState() {
+    super.initState();
+    lastQuoteIndex = PrefsHelper.getLastQuoteIndex();
+    currentQuote = getNextQuote();
+  }
+
+  String getNextQuote() {
+    if (lastQuoteIndex >= quotes.length) {
+      lastQuoteIndex = 0; // Reset to start
+    }
+    PrefsHelper.setLastQuoteIndex(lastQuoteIndex + 1); // Update for next time
+    final fullQuote = quotes[lastQuoteIndex++].split(" — ");
+    currentQuote = fullQuote[0];
+    currentAuthor = fullQuote[1];
+    return currentQuote;
+  }
+
   @override
   Widget build(BuildContext context) {
-    return const Placeholder();
+    return Scaffold(
+      body: SafeArea(
+        child: Stack(
+          children: [
+            // author container
+            Container(
+              width: double.infinity,
+              height: double.infinity,
+              decoration: const BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment(0.00, -1.00),
+                  end: Alignment(0, 1),
+                  colors: [Color(0xFFFFAF14), Color(0xFFFF7902)],
+                ),
+              ),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(vertical: 98.0),
+                child: Align(
+                  alignment: Alignment.topCenter,
+                  child: LayoutBuilder(
+                    // code for centering author name vertically, between
+                    // top of the screen and bottom containers
+                    builder:
+                        (BuildContext context, BoxConstraints constraints) {
+                      double totalHeight = constraints.maxHeight;
+                      double bottomContainerHeight = totalHeight * 0.5;
+                      double remainingHeight =
+                          totalHeight - bottomContainerHeight;
+
+                      return Padding(
+                        padding: EdgeInsets.only(top: remainingHeight / 3),
+                        child: Align(
+                          alignment: Alignment.topCenter,
+                          child: Text(
+                            currentAuthor.toUpperCase(),
+                            style: const TextStyle(
+                              color: Color(0xFFFFE3AC),
+                              fontSize: 24,
+                              fontFamily: 'Besley',
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                ),
+              ),
+            ),
+            // "quote" container
+            Align(
+              alignment: Alignment.bottomCenter,
+              child: Stack(
+                children: [
+                  LayoutBuilder(
+                    // code for calculating logo size
+                    builder: (context, constraints) {
+                      final double containerHeight = constraints.maxHeight;
+                      final double containerWidth = constraints.maxWidth;
+                      final double logoArea = containerHeight *
+                          containerWidth *
+                          0.03; // 3% of container area
+                      final double logoSideLength = sqrt(logoArea);
+
+                      return Stack(
+                        children: [
+                          // Your existing bottom container code
+                          Container(
+                            width: double.infinity,
+                            height: MediaQuery.of(context).size.height * 0.5,
+                            decoration: const ShapeDecoration(
+                              color: Color(0xFFE3E7EB),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.only(
+                                  topRight: Radius.circular(100),
+                                ),
+                              ),
+                            ),
+                            child: Center(
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 18.0),
+                                child: Text(
+                                  currentQuote,
+                                  textAlign: TextAlign.center,
+                                  style: const TextStyle(
+                                    color: Colors.black,
+                                    fontSize: 18,
+                                    fontFamily: 'Besley',
+                                    fontWeight: FontWeight.w400,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                          Positioned(
+                            top: 0,
+                            right: 0,
+                            child: Image.asset(
+                              "assets/icons/logo.png",
+                              width: logoSideLength,
+                              height: logoSideLength,
+                            ),
+                          ),
+                        ],
+                      );
+                    },
+                  ),
+                ],
+              ),
+            ),
+            // Bottom buttons
+            Align(
+              alignment: Alignment.bottomCenter,
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    Container(
+                      width: 48,
+                      height: 48,
+                      padding: const EdgeInsets.all(4),
+                      clipBehavior: Clip.antiAlias,
+                      decoration: ShapeDecoration(
+                        color: const Color(0xFF0B0C0F),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                      ),
+                      child: IconButton(
+                        onPressed: () {
+                          Clipboard.setData(ClipboardData(
+                              text: "$currentQuote — $currentAuthor"));
+                          // show toast message
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text('Copied to clipboard'),
+                            ),
+                          );
+                        },
+                        icon: const Icon(
+                          Icons.copy,
+                          color: Color(0xFFE3E7EB),
+                        ),
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Container(
+                        width: 48,
+                        height: 48,
+                        clipBehavior: Clip.antiAlias,
+                        decoration: ShapeDecoration(
+                          color: const Color(0xFF66C03F),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                        ),
+                        child: IconButton(
+                          onPressed: () {
+                            setState(() {
+                              getNextQuote();
+                            });
+                          },
+                          icon: const Icon(
+                            Icons.autorenew,
+                            color: Color(0xFFE3E7EB),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
   }
 }

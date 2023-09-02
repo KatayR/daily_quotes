@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 class MainPage extends StatelessWidget {
@@ -89,7 +90,8 @@ class MainPage extends StatelessWidget {
                       MenuButton(
                         text: "QUIT",
                         onPressed: () {
-                          Navigator.pop(context);
+                          SystemChannels.platform
+                              .invokeMethod('SystemNavigator.pop');
                         },
                       ),
                     ],

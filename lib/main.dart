@@ -3,9 +3,14 @@ import 'package:daily_quotes/pages/main_page.dart';
 import 'package:daily_quotes/pages/quote_page.dart';
 import 'package:daily_quotes/pages/settings_page.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-void main() {
-  runApp(const MyApp());
+import 'helper/prefs_helper.dart';
+
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await PrefsHelper.init();
+  runApp(MyApp());
 }
 
 class MyApp extends StatefulWidget {
