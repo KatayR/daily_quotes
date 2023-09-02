@@ -134,7 +134,6 @@ class _QuotePageState extends State<QuotePage> {
 
                     return Stack(
                       children: [
-                        // Your existing bottom container code
                         Container(
                           width: double.infinity,
                           height: MediaQuery.of(context).size.height * 0.5,
