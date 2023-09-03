@@ -18,7 +18,7 @@ class MainPage extends StatelessWidget {
             child: SvgPicture.asset("assets/loading.svg",
                 width: double.infinity,
                 height: double.infinity,
-                fit: BoxFit.fill,
+                fit: BoxFit.cover,
                 semanticsLabel: 'Loading'),
           );
         }
