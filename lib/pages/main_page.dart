@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 class MainPage extends StatelessWidget {
@@ -12,17 +13,11 @@ class MainPage extends StatelessWidget {
           const AssetImage("assets/main_background.png"), context),
       builder: (context, snapshot) {
         if (snapshot.connectionState != ConnectionState.done) {
-          return SizedBox(
-            width: double.infinity,
-            height: double.infinity,
-            child: SvgPicture.asset("assets/loading.svg",
-                width: double.infinity,
-                height: double.infinity,
-                fit: BoxFit.cover,
-                semanticsLabel: 'Loading'),
+          return Container(
+            color: const Color(0xFF0B0C0F),
           );
         }
-
+        FlutterNativeSplash.remove();
         return Scaffold(
           body: Container(
             width: double.infinity,
