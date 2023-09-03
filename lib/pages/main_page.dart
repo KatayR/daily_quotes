@@ -8,7 +8,8 @@ class MainPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<void>(
-      future: precacheImage(AssetImage("assets/main_background.png"), context),
+      future: precacheImage(
+          const AssetImage("assets/main_background.png"), context),
       builder: (context, snapshot) {
         if (snapshot.connectionState != ConnectionState.done) {
           return SizedBox(
@@ -140,21 +141,23 @@ class MenuButton extends StatelessWidget {
       child: Container(
         width: MediaQuery.of(context).size.width * 0.8,
         height: 48,
-        padding: const EdgeInsets.all(10),
+        // padding: const EdgeInsets.all(10),
         decoration: ShapeDecoration(
           color: const Color(0xFF0B0C0F),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(12),
           ),
         ),
-        child: Text(
-          text,
-          textAlign: TextAlign.center,
-          style: const TextStyle(
-            color: Color(0xFFE3E7EB),
-            fontSize: 20,
-            fontFamily: 'Besley',
-            fontWeight: FontWeight.w500,
+        child: Center(
+          child: Text(
+            text,
+            // textAlign: TextAlign.center,
+            style: const TextStyle(
+              color: Color(0xFFE3E7EB),
+              fontSize: 20,
+              fontFamily: 'Besley',
+              fontWeight: FontWeight.w500,
+            ),
           ),
         ),
       ),
