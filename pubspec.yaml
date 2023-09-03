@@ -38,6 +38,19 @@ dependencies:
   flutter_svg: ^2.0.7
   shared_preferences: ^2.2.1
   dotted_border: ^2.0.0+3
+  flutter_native_splash: ^2.3.2
+flutter_native_splash:
+  color: "#E3E7EB"
+  image: "assets/splash/splash_image.png"
+  fullscreen: true
+  android_gravity: fill
+  clip_vertical: true
+  android_12:
+    image: assets/splash/splash_icon.png
+    image_dark: assets/splash/splash_icon.png
+    color: "#E3E7EB"
+    color_dark: "#E3E7EB"
+    branding: assets/splash/branding.png
 
 dev_dependencies:
   flutter_test:

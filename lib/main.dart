@@ -4,6 +4,7 @@ import 'package:daily_quotes/pages/quote_page.dart';
 import 'package:daily_quotes/pages/settings_page.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter_native_splash/flutter_native_splash.dart';
 
 import 'helper/prefs_helper.dart';
 
