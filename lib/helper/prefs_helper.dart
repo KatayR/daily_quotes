@@ -15,4 +15,12 @@ class PrefsHelper {
   static setLastQuoteIndex(int value) {
     prefs.setInt('lastQuoteIndex', value);
   }
+
+  static bool getBool(String key) {
+    return prefs.getBool(key) ?? false;
+  }
+
+  static setBool(String key, bool value) {
+    prefs.setBool(key, value);
+  }
 }

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:daily_quotes/helper/prefs_helper.dart';
 
 class SettingsPage extends StatefulWidget {
   const SettingsPage({super.key});
@@ -55,9 +56,9 @@ class _SettingsPageState extends State<SettingsPage> {
                             inactiveThumbColor: const Color(0xffE3E7EB),
                             inactiveTrackColor: const Color(0xFF0B0C0F),
                             splashRadius: 50.0,
-                            value: isMusicOn,
+                            value: isSoundOn,
                             onChanged: (value) =>
-                                setState(() => isMusicOn = value),
+                                setState(() => isSoundOn = value),
                           ),
                         ],
                       ),
@@ -71,9 +72,11 @@ class _SettingsPageState extends State<SettingsPage> {
                             inactiveThumbColor: const Color(0xffE3E7EB),
                             inactiveTrackColor: const Color(0xFF0B0C0F),
                             splashRadius: 50.0,
-                            value: isNotificationOn,
-                            onChanged: (value) =>
-                                setState(() => isNotificationOn = value),
+                            value: isMusicOn,
+                            onChanged: (value) => setState(() {
+                              isMusicOn = value;
+                              PrefsHelper.setBool('isMusicOn', value);
+                            }),
                           ),
                         ],
                       ),
@@ -87,9 +90,9 @@ class _SettingsPageState extends State<SettingsPage> {
                             inactiveThumbColor: const Color(0xffE3E7EB),
                             inactiveTrackColor: const Color(0xFF0B0C0F),
                             splashRadius: 50.0,
-                            value: isSoundOn,
+                            value: isNotificationOn,
                             onChanged: (value) =>
-                                setState(() => isSoundOn = value),
+                                setState(() => isNotificationOn = value),
                           ),
                         ],
                       ),
