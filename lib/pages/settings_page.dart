@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:daily_quotes/helper/prefs_helper.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import '../helper/AudioHelper.dart';
+import 'main_page.dart';
 
 class SettingsPage extends StatefulWidget {
   const SettingsPage({super.key});
@@ -13,6 +16,26 @@ class _SettingsPageState extends State<SettingsPage> {
   bool isSoundOn = false;
   bool isMusicOn = false;
   bool isNotificationOn = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadInitialPreferences();
+  }
+
+  @override
+  dispose() {
+    super.dispose();
+    AudioHelper.dispose();
+  }
+
+  _loadInitialPreferences() async {
+    setState(() {
+      isSoundOn = PrefsHelper.getBool('isSoundOn') ?? false;
+      isMusicOn = PrefsHelper.getBool('isMusicOn') ?? false;
+      isNotificationOn = PrefsHelper.getBool('isNotificationOn') ?? false;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -57,8 +80,10 @@ class _SettingsPageState extends State<SettingsPage> {
                             inactiveTrackColor: const Color(0xFF0B0C0F),
                             splashRadius: 50.0,
                             value: isSoundOn,
-                            onChanged: (value) =>
-                                setState(() => isSoundOn = value),
+                            onChanged: (value) => setState(() {
+                              isSoundOn = value;
+                              PrefsHelper.setBool('isSoundOn', value);
+                            }),
                           ),
                         ],
                       ),
@@ -76,6 +101,13 @@ class _SettingsPageState extends State<SettingsPage> {
                             onChanged: (value) => setState(() {
                               isMusicOn = value;
                               PrefsHelper.setBool('isMusicOn', value);
+                              if (isMusicOn) {
+                                AudioHelper.playMusic();
+                              } else {
+                                print("Stop Music function called");
+                                print('value is $value');
+                                AudioHelper.stopMusic();
+                              }
                             }),
                           ),
                         ],
@@ -91,8 +123,10 @@ class _SettingsPageState extends State<SettingsPage> {
                             inactiveTrackColor: const Color(0xFF0B0C0F),
                             splashRadius: 50.0,
                             value: isNotificationOn,
-                            onChanged: (value) =>
-                                setState(() => isNotificationOn = value),
+                            onChanged: (value) => setState(() {
+                              isNotificationOn = value;
+                              PrefsHelper.setBool('isNotificationOn', value);
+                            }),
                           ),
                         ],
                       ),

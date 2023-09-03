@@ -7,9 +7,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'helper/prefs_helper.dart';
-
-AudioCache cache = AudioCache();
-AudioPlayer player = AudioPlayer();
+import 'package:daily_quotes/helper/audiohelper.dart';
 
 void main() async {
   WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
@@ -35,31 +33,21 @@ class _MyAppState extends State<MyApp> {
   }
 
   _loadMusicPreference() async {
-    // play on loop
-    player.setReleaseMode(ReleaseMode.loop);
-    player.play(
-      AssetSource(
-        'sounds/testMusic.wav',
-      ),
-    );
-    // SharedPreferences prefs = await SharedPreferences.getInstance();
-    // setState(() {
-    //   isMusicOn = prefs.getBool('isMusicOn') ?? true;
-    // });
-    //
-    // if (isMusicOn) {
-    //   playMusic();
-    // }
+    setState(() {
+      isMusicOn = PrefsHelper.getBool('isMusicOn') ?? false;
+    });
+
+    if (isMusicOn) {
+      playMusic();
+    }
   }
 
   playMusic() async {
-    await player!.setSource(AssetSource('assets/sounds/music.mp3'));
-    player!.setReleaseMode(ReleaseMode.loop);
-    player!.play(AssetSource('assets/sounds/music.mp3'));
+    AudioHelper.playMusic();
   }
 
   stopMusic() {
-    player?.stop();
+    AudioHelper.stopMusic();
   }
 
   @override
