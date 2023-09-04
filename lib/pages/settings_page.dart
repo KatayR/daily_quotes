@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:daily_quotes/helper/prefs_helper.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import '../helper/AudioHelper.dart';
-import 'package:restart_app/restart_app.dart';
+
+import 'package:url_launcher/url_launcher.dart';
 
 class SettingsPage extends StatefulWidget {
   const SettingsPage({super.key});
@@ -16,6 +16,8 @@ class _SettingsPageState extends State<SettingsPage> {
   bool isSoundOn = false;
   bool isMusicOn = false;
   bool isNotificationOn = false;
+  String privacyPolicyUrl =
+      "https://doc-hosting.flycricket.io/daily-quotes-privacy-policy/b9d07ec3-0594-46a5-9b8d-e709afd6de35/privacy";
 
   @override
   void initState() {
@@ -58,42 +60,62 @@ class _SettingsPageState extends State<SettingsPage> {
                 children: [
                   Padding(
                     padding: const EdgeInsets.all(18.0),
-                    child: Column(children: [
-                      const Text(
-                        'SETTINGS',
-                        style: TextStyle(
-                          color: Colors.black,
-                          fontSize: 24,
-                          fontFamily: 'Besley',
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
-                      SettingRow(
-                        text: 'Sound',
-                        value: isSoundOn,
-                        onChanged: (value) => setState(() {
-                          if (isSoundOn) {
-                            EffectHelper.playSound();
-                          }
-                          isSoundOn = value;
-                        }),
-                      ),
-                      SettingRow(
-                        text: 'Music',
-                        value: isMusicOn,
-                        onChanged: (value) => setState(() {
-                          if (isSoundOn) {
-                            EffectHelper.playSound();
-                          }
-                          isMusicOn = value;
-                          if (isMusicOn) {
-                            MusicHelper.playMusic();
-                          } else {
-                            MusicHelper.stopMusic();
-                          }
-                        }),
-                      ),
-                    ]),
+                    child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const Center(
+                            child: Text(
+                              'SETTINGS',
+                              style: TextStyle(
+                                color: Colors.black,
+                                fontSize: 24,
+                                fontFamily: 'Besley',
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                          ),
+                          SettingRow(
+                            text: 'Sound',
+                            value: isSoundOn,
+                            onChanged: (value) => setState(() {
+                              if (isSoundOn) {
+                                EffectHelper.playSound();
+                              }
+                              isSoundOn = value;
+                            }),
+                          ),
+                          SettingRow(
+                            text: 'Music',
+                            value: isMusicOn,
+                            onChanged: (value) => setState(() {
+                              if (isSoundOn) {
+                                EffectHelper.playSound();
+                              }
+                              isMusicOn = value;
+                              if (isMusicOn) {
+                                MusicHelper.playMusic();
+                              } else {
+                                MusicHelper.stopMusic();
+                              }
+                            }),
+                          ),
+                          GestureDetector(
+                            onTap: () {
+                              launchUrl(
+                                Uri.parse(privacyPolicyUrl),
+                              );
+                            },
+                            child: const Padding(
+                              padding: EdgeInsets.symmetric(vertical: 8.0),
+                              child: Text(
+                                'Privacy Policy',
+                                style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.black),
+                              ),
+                            ),
+                          ),
+                        ]),
                   ),
                   Container(
                     color: const Color(0xFFE3E7EB),
@@ -203,14 +225,14 @@ class OptionText extends StatelessWidget {
 }
 
 class SettingRow extends StatefulWidget {
-  SettingRow(
+  const SettingRow(
       {super.key,
       required this.text,
       required this.value,
       required this.onChanged});
-  String text;
-  bool value;
-  var onChanged;
+  final String text;
+  final bool value;
+  final onChanged;
 
   @override
   State<SettingRow> createState() => _SettingRowState();
