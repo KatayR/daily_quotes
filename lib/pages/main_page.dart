@@ -1,3 +1,4 @@
+import 'package:audioplayers/audioplayers.dart';
 import 'package:daily_quotes/pages/settings_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -13,16 +14,24 @@ class MainPage extends StatefulWidget {
   State<MainPage> createState() => _MainPageState();
 }
 
-class _MainPageState extends State<MainPage> {
+class _MainPageState extends State<MainPage> with WidgetsBindingObserver {
   bool isMusicOn = false;
   bool isSoundOn = false;
+
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.paused) {
+      MusicHelper.pauseMusic();
+    } else if (state == AppLifecycleState.resumed) {
+      MusicHelper.resumeMusic();
+    }
+  }
 
   @override
   void initState() {
     super.initState();
     _loadMusicPreference();
     _loadSoundPreference();
-
+    WidgetsBinding.instance.addObserver(this);
     EffectHelper.loadSound();
   }
 
@@ -122,7 +131,6 @@ class _MainPageState extends State<MainPage> {
                                 isMusicOn
                                     ? MusicHelper.playMusic()
                                     : MusicHelper.stopMusic();
-                                // If you need to reload the sound in EffectHelper, do it here.
                               }
                             });
                           },
@@ -221,7 +229,6 @@ class MenuButton extends StatelessWidget {
       child: Container(
         width: MediaQuery.of(context).size.width * 0.8,
         height: 48,
-        // padding: const EdgeInsets.all(10),
         decoration: ShapeDecoration(
           color: const Color(0xFF0B0C0F),
           shape: RoundedRectangleBorder(
@@ -231,7 +238,6 @@ class MenuButton extends StatelessWidget {
         child: Center(
           child: Text(
             text,
-            // textAlign: TextAlign.center,
             style: const TextStyle(
               color: Color(0xFFE3E7EB),
               fontSize: 20,

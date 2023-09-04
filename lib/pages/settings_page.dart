@@ -189,7 +189,6 @@ class MenuButton extends StatelessWidget {
           child: Center(
             child: Text(
               text,
-              // textAlign: TextAlign.center,
               style: const TextStyle(
                 color: Color(0xFFE3E7EB),
                 fontSize: 20,

@@ -35,9 +35,9 @@ class _QuotePageState extends State<QuotePage> {
 
   String getNextQuote() {
     if (lastQuoteIndex >= quotes.length) {
-      lastQuoteIndex = 0; // Reset to start
+      lastQuoteIndex = 0;
     }
-    PrefsHelper.setLastQuoteIndex(lastQuoteIndex + 1); // Update for next time
+    PrefsHelper.setLastQuoteIndex(lastQuoteIndex + 1);
     final fullQuote = quotes[lastQuoteIndex++].split(" — ");
     currentQuote = fullQuote[0];
     currentAuthor = fullQuote[1];
@@ -246,7 +246,9 @@ class _QuotePageState extends State<QuotePage> {
                       ),
                       child: IconButton(
                         onPressed: () {
-                          EffectHelper.playSound();
+                          if (isSoundOn) {
+                            EffectHelper.playSound();
+                          }
                           setState(() {
                             getNextQuote();
                           });

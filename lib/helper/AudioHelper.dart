@@ -16,6 +16,18 @@ class MusicHelper {
     );
   }
 
+  // pause music
+  static pauseMusic() async {
+    await player.pause();
+    player.state = PlayerState.paused;
+  }
+
+  // continue music
+  static resumeMusic() async {
+    await player.resume();
+    player.state = PlayerState.playing;
+  }
+
   static stopMusic() async {
     player.dispose();
     player = AudioPlayer();

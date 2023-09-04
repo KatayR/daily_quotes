@@ -3,9 +3,29 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import '../helper/AudioHelper.dart';
+import '../helper/prefs_helper.dart';
 
-class AboutPage extends StatelessWidget {
+class AboutPage extends StatefulWidget {
   const AboutPage({super.key});
+
+  @override
+  State<AboutPage> createState() => _AboutPageState();
+}
+
+class _AboutPageState extends State<AboutPage> {
+  bool isSoundOn = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadSoundPreference();
+  }
+
+  _loadSoundPreference() async {
+    setState(() {
+      isSoundOn = PrefsHelper.getBool('isSoundOn') ?? false;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -54,9 +74,8 @@ class AboutPage extends StatelessWidget {
                       ),
                     ),
                   ]),
-                  // MARK
                   Container(
-                    color: Color(0xFFE3E7EB),
+                    color: const Color(0xFFE3E7EB),
                     width: double.infinity,
                     height: 240,
                     child: Column(
@@ -64,13 +83,17 @@ class AboutPage extends StatelessWidget {
                       children: [
                         MenuButton(
                             onPressed: () {
-                              EffectHelper.playSound();
+                              if (isSoundOn) {
+                                EffectHelper.playSound();
+                              }
                               Navigator.pop(context);
                             },
                             text: 'BACK'),
                         MenuButton(
                             onPressed: () {
-                              EffectHelper.playSound();
+                              if (isSoundOn) {
+                                EffectHelper.playSound();
+                              }
                               SystemChannels.platform
                                   .invokeMethod('SystemNavigator.pop');
                             },
@@ -122,7 +145,6 @@ class MenuButton extends StatelessWidget {
           child: Center(
             child: Text(
               text,
-              // textAlign: TextAlign.center,
               style: const TextStyle(
                 color: Color(0xFFE3E7EB),
                 fontSize: 20,

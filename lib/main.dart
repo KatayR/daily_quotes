@@ -3,6 +3,7 @@ import 'package:daily_quotes/pages/main_page.dart';
 import 'package:daily_quotes/pages/quote_page.dart';
 import 'package:daily_quotes/pages/settings_page.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'helper/AudioHelper.dart';
 import 'helper/prefs_helper.dart';
@@ -28,7 +29,17 @@ class _MyAppState extends State<MyApp> {
   }
 
   @override
+  void dispose() {
+    super.dispose();
+    MusicHelper.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+      DeviceOrientation.portraitDown,
+    ]);
     return MaterialApp(
         theme: ThemeData(primarySwatch: Colors.blue),
         debugShowCheckedModeBanner: false,
