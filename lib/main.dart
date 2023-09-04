@@ -13,7 +13,7 @@ void main() async {
   WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
   FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
   await PrefsHelper.init();
-  runApp(MyApp());
+  runApp(const MyApp());
 }
 
 class MyApp extends StatefulWidget {
@@ -30,6 +30,12 @@ class _MyAppState extends State<MyApp> {
   void initState() {
     super.initState();
     _loadMusicPreference();
+  }
+
+  @override
+  dispose() {
+    super.dispose();
+    AudioHelper.dispose();
   }
 
   _loadMusicPreference() async {

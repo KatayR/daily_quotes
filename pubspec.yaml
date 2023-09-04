@@ -39,7 +39,8 @@ dependencies:
   shared_preferences: ^2.2.1
   dotted_border: ^2.0.0+3
   flutter_native_splash: ^2.3.2
-  audioplayers: ^3.0.1
+  audioplayers: ^5.1.0
+  restart_app: ^1.2.1
 
 flutter_native_splash:
   color: "#E3E7EB"

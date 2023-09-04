@@ -3,7 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:daily_quotes/helper/prefs_helper.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../helper/AudioHelper.dart';
-import 'main_page.dart';
+import 'package:restart_app/restart_app.dart';
 
 class SettingsPage extends StatefulWidget {
   const SettingsPage({super.key});
@@ -26,7 +26,6 @@ class _SettingsPageState extends State<SettingsPage> {
   @override
   dispose() {
     super.dispose();
-    AudioHelper.dispose();
   }
 
   _loadInitialPreferences() async {
@@ -100,14 +99,12 @@ class _SettingsPageState extends State<SettingsPage> {
                             value: isMusicOn,
                             onChanged: (value) => setState(() {
                               isMusicOn = value;
-                              PrefsHelper.setBool('isMusicOn', value);
-                              if (isMusicOn) {
-                                AudioHelper.playMusic();
-                              } else {
-                                print("Stop Music function called");
-                                print('value is $value');
-                                AudioHelper.stopMusic();
-                              }
+                              // if (isMusicOn) {
+                              //   AudioHelper.playMusic();
+                              // } else {
+                              //   AudioHelper.stopMusic();
+                              //   // Restart.restartApp();
+                              // }
                             }),
                           ),
                         ],
@@ -140,7 +137,14 @@ class _SettingsPageState extends State<SettingsPage> {
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        MenuButton(onPressed: () {}, text: 'SAVE'),
+                        MenuButton(
+                            onPressed: () {
+                              PrefsHelper.setBool('isMusicOn', isMusicOn);
+
+                              // restart app
+                              Restart.restartApp();
+                            },
+                            text: 'SAVE'),
                         MenuButton(
                             onPressed: () => SystemChannels.platform
                                 .invokeMethod('SystemNavigator.pop'),
