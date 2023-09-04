@@ -2,6 +2,8 @@ import 'package:daily_quotes/constants/about.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+import '../helper/AudioHelper.dart';
+
 class AboutPage extends StatelessWidget {
   const AboutPage({super.key});
 
@@ -61,11 +63,17 @@ class AboutPage extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         MenuButton(
-                            onPressed: () => Navigator.pop(context),
+                            onPressed: () {
+                              EffectHelper.playSound();
+                              Navigator.pop(context);
+                            },
                             text: 'BACK'),
                         MenuButton(
-                            onPressed: () => SystemChannels.platform
-                                .invokeMethod('SystemNavigator.pop'),
+                            onPressed: () {
+                              EffectHelper.playSound();
+                              SystemChannels.platform
+                                  .invokeMethod('SystemNavigator.pop');
+                            },
                             text: 'QUIT'),
                       ],
                     ),

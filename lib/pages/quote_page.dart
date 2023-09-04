@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:daily_quotes/constants/quotes.dart';
 import 'package:daily_quotes/helper/prefs_helper.dart';
 import 'package:flutter/services.dart';
+import '../helper/AudioHelper.dart';
 
 class QuotePage extends StatefulWidget {
   const QuotePage({super.key});
@@ -16,12 +17,20 @@ class _QuotePageState extends State<QuotePage> {
   String currentQuote = '';
   String currentAuthor = '';
   late int lastQuoteIndex;
+  bool isSoundOn = false;
 
   @override
   void initState() {
     super.initState();
     lastQuoteIndex = PrefsHelper.getLastQuoteIndex();
     currentQuote = getNextQuote();
+    _loadSoundPreference();
+  }
+
+  _loadSoundPreference() async {
+    setState(() {
+      isSoundOn = PrefsHelper.getBool('isSoundOn') ?? false;
+    });
   }
 
   String getNextQuote() {
@@ -44,7 +53,12 @@ class _QuotePageState extends State<QuotePage> {
         backgroundColor: Colors.transparent,
         automaticallyImplyLeading: false,
         title: GestureDetector(
-          onTap: () => Navigator.pop(context),
+          onTap: () {
+            if (isSoundOn) {
+              EffectHelper.playSound();
+            }
+            Navigator.pop(context);
+          },
           child: const Row(
             children: [
               Icon(Icons.arrow_back_ios, color: Colors.black),
@@ -200,6 +214,9 @@ class _QuotePageState extends State<QuotePage> {
                     ),
                     child: IconButton(
                       onPressed: () {
+                        if (isSoundOn) {
+                          EffectHelper.playSound();
+                        }
                         Clipboard.setData(ClipboardData(
                             text: "$currentQuote — $currentAuthor"));
                         // show toast message
@@ -229,6 +246,7 @@ class _QuotePageState extends State<QuotePage> {
                       ),
                       child: IconButton(
                         onPressed: () {
+                          EffectHelper.playSound();
                           setState(() {
                             getNextQuote();
                           });

@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-
 import '../helper/AudioHelper.dart';
 import '../helper/prefs_helper.dart';
 
@@ -16,11 +15,15 @@ class MainPage extends StatefulWidget {
 
 class _MainPageState extends State<MainPage> {
   bool isMusicOn = false;
+  bool isSoundOn = false;
 
   @override
   void initState() {
     super.initState();
     _loadMusicPreference();
+    _loadSoundPreference();
+
+    EffectHelper.loadSound();
   }
 
   _loadMusicPreference() async {
@@ -33,18 +36,24 @@ class _MainPageState extends State<MainPage> {
     }
   }
 
+  _loadSoundPreference() async {
+    setState(() {
+      isSoundOn = PrefsHelper.getBool('isSoundOn') ?? false;
+    });
+  }
+
   playMusic() async {
-    AudioHelper.playMusic();
+    MusicHelper.playMusic();
   }
 
   stopMusic() {
-    AudioHelper.stopMusic();
+    MusicHelper.stopMusic();
   }
 
   @override
   dispose() {
     super.dispose();
-    AudioHelper.dispose();
+    MusicHelper.dispose();
   }
 
   @override
@@ -95,6 +104,9 @@ class _MainPageState extends State<MainPage> {
                         ),
                         GestureDetector(
                           onTap: () {
+                            if (isSoundOn) {
+                              EffectHelper.playSound();
+                            }
                             Navigator.push(
                               context,
                               MaterialPageRoute(
@@ -104,9 +116,13 @@ class _MainPageState extends State<MainPage> {
                               if (result != null && result is Map) {
                                 setState(() {
                                   isMusicOn = result['isMusicOn'] ?? isMusicOn;
+                                  isSoundOn = result['isSoundOn'] ?? isSoundOn;
                                 });
 
-                                isMusicOn ? playMusic() : stopMusic();
+                                isMusicOn
+                                    ? MusicHelper.playMusic()
+                                    : MusicHelper.stopMusic();
+                                // If you need to reload the sound in EffectHelper, do it here.
                               }
                             });
                           },
@@ -143,13 +159,18 @@ class _MainPageState extends State<MainPage> {
                       child: Column(
                         children: [
                           MenuButton(
+                            isSoundEnabled: isSoundOn,
                             text: "QUOTE OF THE DAY",
                             onPressed: () {
+                              if (isSoundOn) {
+                                EffectHelper.playSound();
+                              }
                               Navigator.pushNamed(context, '/quote');
                             },
                           ),
                           const SizedBox(height: 16),
                           MenuButton(
+                            isSoundEnabled: isSoundOn,
                             text: "ABOUT",
                             onPressed: () {
                               Navigator.pushNamed(context, '/about');
@@ -157,6 +178,7 @@ class _MainPageState extends State<MainPage> {
                           ),
                           const SizedBox(height: 16),
                           MenuButton(
+                            isSoundEnabled: isSoundOn,
                             text: "QUIT",
                             onPressed: () {
                               SystemChannels.platform
@@ -178,15 +200,24 @@ class _MainPageState extends State<MainPage> {
 }
 
 class MenuButton extends StatelessWidget {
-  const MenuButton({super.key, required this.onPressed, required this.text});
-
+  MenuButton(
+      {super.key,
+      required this.onPressed,
+      required this.text,
+      required this.isSoundEnabled});
+  bool isSoundEnabled;
   final String text;
   final VoidCallback onPressed;
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: onPressed,
+      onTap: () async {
+        if (isSoundEnabled) {
+          EffectHelper.playSound();
+        }
+        onPressed();
+      },
       child: Container(
         width: MediaQuery.of(context).size.width * 0.8,
         height: 48,

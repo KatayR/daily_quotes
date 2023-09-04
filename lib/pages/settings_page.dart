@@ -68,60 +68,33 @@ class _SettingsPageState extends State<SettingsPage> {
                           fontWeight: FontWeight.w500,
                         ),
                       ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          const OptionText(text: 'Sound'),
-                          Switch(
-                            activeColor: const Color(0xffE3E7EB),
-                            activeTrackColor: const Color(0xFF66C03F),
-                            inactiveThumbColor: const Color(0xffE3E7EB),
-                            inactiveTrackColor: const Color(0xFF0B0C0F),
-                            splashRadius: 50.0,
-                            value: isSoundOn,
-                            onChanged: (value) => setState(() {
-                              isSoundOn = value;
-                            }),
-                          ),
-                        ],
+                      SettingRow(
+                        text: 'Sound',
+                        value: isSoundOn,
+                        onChanged: (value) => setState(() {
+                          if (isSoundOn) {
+                            EffectHelper.playSound();
+                          }
+                          isSoundOn = value;
+                        }),
                       ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          const OptionText(text: 'Music'),
-                          Switch(
-                            activeColor: const Color(0xffE3E7EB),
-                            activeTrackColor: const Color(0xFF66C03F),
-                            inactiveThumbColor: const Color(0xffE3E7EB),
-                            inactiveTrackColor: const Color(0xFF0B0C0F),
-                            splashRadius: 50.0,
-                            value: isMusicOn,
-                            onChanged: (value) => setState(() {
-                              isMusicOn = value;
-                            }),
-                          ),
-                        ],
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          const OptionText(text: 'Notifications'),
-                          Switch(
-                            activeColor: const Color(0xffE3E7EB),
-                            activeTrackColor: const Color(0xFF66C03F),
-                            inactiveThumbColor: const Color(0xffE3E7EB),
-                            inactiveTrackColor: const Color(0xFF0B0C0F),
-                            splashRadius: 50.0,
-                            value: isNotificationOn,
-                            onChanged: (value) => setState(() {
-                              isNotificationOn = value;
-                            }),
-                          ),
-                        ],
+                      SettingRow(
+                        text: 'Music',
+                        value: isMusicOn,
+                        onChanged: (value) => setState(() {
+                          if (isSoundOn) {
+                            EffectHelper.playSound();
+                          }
+                          isMusicOn = value;
+                          if (isMusicOn) {
+                            MusicHelper.playMusic();
+                          } else {
+                            MusicHelper.stopMusic();
+                          }
+                        }),
                       ),
                     ]),
                   ),
-                  // MARK
                   Container(
                     color: const Color(0xFFE3E7EB),
                     width: double.infinity,
@@ -130,15 +103,17 @@ class _SettingsPageState extends State<SettingsPage> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         MenuButton(
-                            onPressed: () {
-                              PrefsHelper.setBool('isSoundOn', isSoundOn);
-                              PrefsHelper.setBool('isMusicOn', isMusicOn);
-                              PrefsHelper.setBool(
-                                  'isNotificationOn', isNotificationOn);
-                              // restart app
-                              // Restart.restartApp();
-                              //pop page
-                              Navigator.pop(context, {'isMusicOn': isMusicOn});
+                            onPressed: () async {
+                              if (isSoundOn) {
+                                EffectHelper.playSound();
+                              }
+                              await PrefsHelper.setBool('isSoundOn', isSoundOn);
+                              await PrefsHelper.setBool('isMusicOn', isMusicOn);
+
+                              Navigator.pop(context, {
+                                'isMusicOn': isMusicOn,
+                                'isSoundOn': isSoundOn
+                              });
                             },
                             text: 'SAVE'),
                         MenuButton(
@@ -223,6 +198,41 @@ class OptionText extends StatelessWidget {
         fontWeight: FontWeight.w400,
         height: 1.25,
       ),
+    );
+  }
+}
+
+class SettingRow extends StatefulWidget {
+  SettingRow(
+      {super.key,
+      required this.text,
+      required this.value,
+      required this.onChanged});
+  String text;
+  bool value;
+  var onChanged;
+
+  @override
+  State<SettingRow> createState() => _SettingRowState();
+}
+
+class _SettingRowState extends State<SettingRow> {
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        OptionText(text: widget.text),
+        Switch(
+          activeColor: const Color(0xffE3E7EB),
+          activeTrackColor: const Color(0xFF66C03F),
+          inactiveThumbColor: const Color(0xffE3E7EB),
+          inactiveTrackColor: const Color(0xFF0B0C0F),
+          splashRadius: 50.0,
+          value: widget.value,
+          onChanged: widget.onChanged,
+        ),
+      ],
     );
   }
 }
