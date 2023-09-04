@@ -81,7 +81,6 @@ class _SettingsPageState extends State<SettingsPage> {
                             value: isSoundOn,
                             onChanged: (value) => setState(() {
                               isSoundOn = value;
-                              PrefsHelper.setBool('isSoundOn', value);
                             }),
                           ),
                         ],
@@ -99,12 +98,6 @@ class _SettingsPageState extends State<SettingsPage> {
                             value: isMusicOn,
                             onChanged: (value) => setState(() {
                               isMusicOn = value;
-                              // if (isMusicOn) {
-                              //   AudioHelper.playMusic();
-                              // } else {
-                              //   AudioHelper.stopMusic();
-                              //   // Restart.restartApp();
-                              // }
                             }),
                           ),
                         ],
@@ -122,7 +115,6 @@ class _SettingsPageState extends State<SettingsPage> {
                             value: isNotificationOn,
                             onChanged: (value) => setState(() {
                               isNotificationOn = value;
-                              PrefsHelper.setBool('isNotificationOn', value);
                             }),
                           ),
                         ],
@@ -131,7 +123,7 @@ class _SettingsPageState extends State<SettingsPage> {
                   ),
                   // MARK
                   Container(
-                    color: Color(0xFFE3E7EB),
+                    color: const Color(0xFFE3E7EB),
                     width: double.infinity,
                     height: 240,
                     child: Column(
@@ -139,8 +131,10 @@ class _SettingsPageState extends State<SettingsPage> {
                       children: [
                         MenuButton(
                             onPressed: () {
+                              PrefsHelper.setBool('isSoundOn', isSoundOn);
                               PrefsHelper.setBool('isMusicOn', isMusicOn);
-
+                              PrefsHelper.setBool(
+                                  'isNotificationOn', isNotificationOn);
                               // restart app
                               Restart.restartApp();
                             },
