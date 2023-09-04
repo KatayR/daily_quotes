@@ -24,38 +24,6 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  bool isMusicOn = false;
-
-  @override
-  void initState() {
-    super.initState();
-    _loadMusicPreference();
-  }
-
-  @override
-  dispose() {
-    super.dispose();
-    AudioHelper.dispose();
-  }
-
-  _loadMusicPreference() async {
-    setState(() {
-      isMusicOn = PrefsHelper.getBool('isMusicOn') ?? false;
-    });
-
-    if (isMusicOn) {
-      playMusic();
-    }
-  }
-
-  playMusic() async {
-    AudioHelper.playMusic();
-  }
-
-  stopMusic() {
-    AudioHelper.stopMusic();
-  }
-
   @override
   Widget build(BuildContext context) {
     return MaterialApp(

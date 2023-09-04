@@ -136,7 +136,9 @@ class _SettingsPageState extends State<SettingsPage> {
                               PrefsHelper.setBool(
                                   'isNotificationOn', isNotificationOn);
                               // restart app
-                              Restart.restartApp();
+                              // Restart.restartApp();
+                              //pop page
+                              Navigator.pop(context, {'isMusicOn': isMusicOn});
                             },
                             text: 'SAVE'),
                         MenuButton(
