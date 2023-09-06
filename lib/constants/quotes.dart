@@ -19,7 +19,7 @@ const List<String> quotes = [
   "“The difference between a successful person and others is not a lack of strength, not a lack of knowledge, but rather a lack of will.” — Vince Lombardi",
   "“The man who follows the crowd will usually get no further than the crowd. The man who walks alone is likely to find himself in places no one has ever been.” — Alan Ashley-Pitt",
   "“It takes 20 years to build a reputation and five minutes to ruin it. If you think about that, you’ll do things differently.” — Warren Buffett",
-  "“Champions aren’t made in the gyms. Champions are made from something they have deep inside them — a desire, a dream, a vision.” — Muhammad Ali",
+  "“Champions aren’t made in the gyms. Champions are made from something they have deep inside them - a desire, a dream, a vision.” — Muhammad Ali",
   "“Dwell not on the past. Use it to illustrate a point, then leave it behind. Nothing really matters except what you do now in this instant of time. From this moment onwards you can be an entirely different person, filled with love and understanding, ready with an outstretched hand, uplifted and positive in every thought and deed.” — Eileen Caddy",
   "“The critical ingredient is getting off your butt and doing something. It’s as simple as that. A lot of people have ideas, but there are few who decide to do something about them now. Not tomorrow. Not next week. But today. The true entrepreneur is a doer.” — Nolan Bushnell",
   "“Whatever you vividly imagine, ardently desire, sincerely believe, and enthusiastically act upon must inevitably come to pass!” — Paul J. Meyer",

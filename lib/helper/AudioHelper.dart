@@ -57,6 +57,7 @@ class EffectHelper {
   }
 
   static playSound() async {
-    int streamId = await pool.play(soundId);
+    print('sound id is $soundId');
+    await pool.play(soundId);
   }
 }

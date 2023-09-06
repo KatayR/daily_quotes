@@ -1,8 +1,10 @@
+import 'package:daily_quotes/components/quote_logo.dart';
+import 'package:daily_quotes/constants/about.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:daily_quotes/helper/prefs_helper.dart';
+import '../components/menu_button.dart';
 import '../helper/AudioHelper.dart';
-
 import 'package:url_launcher/url_launcher.dart';
 
 class SettingsPage extends StatefulWidget {
@@ -16,8 +18,6 @@ class _SettingsPageState extends State<SettingsPage> {
   bool isSoundOn = false;
   bool isMusicOn = false;
   bool isNotificationOn = false;
-  String privacyPolicyUrl =
-      "https://doc-hosting.flycricket.io/daily-quotes-privacy-policy/b9d07ec3-0594-46a5-9b8d-e709afd6de35/privacy";
 
   @override
   void initState() {
@@ -32,9 +32,9 @@ class _SettingsPageState extends State<SettingsPage> {
 
   _loadInitialPreferences() async {
     setState(() {
-      isSoundOn = PrefsHelper.getBool('isSoundOn') ?? false;
-      isMusicOn = PrefsHelper.getBool('isMusicOn') ?? false;
-      isNotificationOn = PrefsHelper.getBool('isNotificationOn') ?? false;
+      isSoundOn = PrefsHelper.getBool('isSoundOn');
+      isMusicOn = PrefsHelper.getBool('isMusicOn');
+      isNotificationOn = PrefsHelper.getBool('isNotificationOn');
     });
   }
 
@@ -53,9 +53,8 @@ class _SettingsPageState extends State<SettingsPage> {
           ),
         ),
         child: SafeArea(
-          child: Stack(
-            children: [
-              Column(
+          child: Stack(children: [
+            Column(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Padding(
@@ -99,6 +98,7 @@ class _SettingsPageState extends State<SettingsPage> {
                               }
                             }),
                           ),
+                          // Privacy Policy Link
                           GestureDetector(
                             onTap: () {
                               launchUrl(
@@ -120,15 +120,14 @@ class _SettingsPageState extends State<SettingsPage> {
                   Container(
                     color: const Color(0xFFE3E7EB),
                     width: double.infinity,
-                    height: 240,
+                    height: MediaQuery.of(context).size.height * 0.3,
                     child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        MenuButton(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          MenuButton(
+                            text: 'SAVE',
+                            isSoundEnabled: isSoundOn,
                             onPressed: () async {
-                              if (isSoundOn) {
-                                EffectHelper.playSound();
-                              }
                               await PrefsHelper.setBool('isSoundOn', isSoundOn);
                               await PrefsHelper.setBool('isMusicOn', isMusicOn);
 
@@ -137,66 +136,19 @@ class _SettingsPageState extends State<SettingsPage> {
                                 'isSoundOn': isSoundOn
                               });
                             },
-                            text: 'SAVE'),
-                        MenuButton(
+                          ),
+                          const SizedBox(height: 16),
+                          MenuButton(
+                            text: 'QUIT',
+                            isSoundEnabled: isSoundOn,
                             onPressed: () => SystemChannels.platform
                                 .invokeMethod('SystemNavigator.pop'),
-                            text: 'QUIT'),
-                      ],
-                    ),
+                          ),
+                        ]),
                   ),
-                ],
-              ),
-              Positioned(
-                bottom: 200,
-                right: 10,
-                child: Image.asset(
-                  'assets/icons/logo.png',
-                  width: 100,
-                  height: 100,
-                  scale: 2.8,
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class MenuButton extends StatelessWidget {
-  const MenuButton({super.key, required this.onPressed, required this.text});
-
-  final String text;
-  final VoidCallback onPressed;
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onPressed,
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Container(
-          width: MediaQuery.of(context).size.width * 0.8,
-          height: 48,
-          decoration: ShapeDecoration(
-            color: const Color(0xFF0B0C0F),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(12),
-            ),
-          ),
-          child: Center(
-            child: Text(
-              text,
-              style: const TextStyle(
-                color: Color(0xFFE3E7EB),
-                fontSize: 20,
-                fontFamily: 'Besley',
-                fontWeight: FontWeight.w500,
-              ),
-            ),
-          ),
+                ]),
+            const QuoteLogo(),
+          ]),
         ),
       ),
     );
@@ -231,7 +183,7 @@ class SettingRow extends StatefulWidget {
       required this.onChanged});
   final String text;
   final bool value;
-  final onChanged;
+  final ValueChanged<bool> onChanged;
 
   @override
   State<SettingRow> createState() => _SettingRowState();
